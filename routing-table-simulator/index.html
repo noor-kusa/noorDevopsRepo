@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Routing Table &amp; Longest-Prefix-Match Simulator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Routing Table Simulator</h1>
+    <p class="subtitle">Build routing tables, trace longest-prefix-match decisions across multiple router hops</p>
+  </header>
+
+  <section class="card">
+    <div class="hop-tabs" id="hop-tabs"></div>
+    <div class="hop-actions">
+      <button id="btn-add-hop">+ Add Router Hop</button>
+      <button id="btn-remove-hop">Remove Current Hop</button>
+    </div>
+
+    <h2 id="active-hop-title">Router 1</h2>
+    <p class="hint">Target can be a terminal label (<code>local</code>, <code>nat</code>, <code>tgw</code>, <code>drop</code>, or anything you like) or the reserved word <code>next-hop</code>, which forwards the lookup to the next router in the chain.</p>
+
+    <div class="table-scroll">
+      <table class="results-table" id="routes-table">
+        <thead><tr><th>Destination CIDR</th><th>Target</th><th></th></tr></thead>
+        <tbody id="routes-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="control-row">
+      <div class="control-group grow">
+        <label for="new-cidr">Destination CIDR</label>
+        <input id="new-cidr" type="text" placeholder="e.g. 10.21.0.0/16">
+      </div>
+      <div class="control-group grow">
+        <label for="new-target">Target</label>
+        <input id="new-target" type="text" placeholder="e.g. local, nat, tgw, drop, next-hop">
+      </div>
+      <button id="btn-add-route" class="primary">Add Route</button>
+    </div>
+    <p class="error" id="route-error"></p>
+  </section>
+
+  <section class="card">
+    <h2>Nested CIDR Visualization</h2>
+    <p class="hint">Any two valid CIDR blocks are either disjoint or one fully contains the other — so overlapping routes always form a nesting tree, shown below for the current hop.</p>
+    <div id="viz" class="viz-root"></div>
+  </section>
+
+  <section class="card">
+    <h2>Trace a Packet</h2>
+    <div class="control-row">
+      <div class="control-group grow">
+        <label for="dest-ip">Destination IP</label>
+        <input id="dest-ip" type="text" value="192.168.1.5" placeholder="e.g. 192.168.1.5">
+      </div>
+      <button id="btn-trace" class="primary">Trace Route</button>
+    </div>
+    <p class="error" id="trace-error"></p>
+  </section>
+
+  <section class="card" id="result-card" hidden>
+    <h2>Result</h2>
+    <div id="hop-trace"></div>
+    <div class="final-answer" id="final-answer"></div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
