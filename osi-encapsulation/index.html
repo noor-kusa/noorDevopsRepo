@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSI / TCP-IP Encapsulation Visualizer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Encapsulation Visualizer</h1>
+    <p class="subtitle">Watch a message travel down the stack, across the wire, and back up on the other side</p>
+  </header>
+
+  <section class="card controls">
+    <div class="control-row">
+      <div class="control-group grow">
+        <label for="msg-input">Message</label>
+        <input id="msg-input" type="text" value="Hi there" maxlength="60">
+      </div>
+      <div class="control-group">
+        <label for="protocol-select">Application Protocol</label>
+        <select id="protocol-select">
+          <option value="HTTP">HTTP</option>
+          <option value="DNS">DNS</option>
+          <option value="SMTP">SMTP</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="model-select">Model View</label>
+        <select id="model-select">
+          <option value="osi">OSI (7 layers)</option>
+          <option value="tcpip">TCP/IP (4 layers)</option>
+          <option value="both">Both, side by side</option>
+        </select>
+      </div>
+    </div>
+    <div class="control-row">
+      <button id="btn-send" class="primary">Send</button>
+      <button id="btn-play">▶ Play</button>
+      <button id="btn-prev">◀ Prev</button>
+      <button id="btn-next">Next ▶</button>
+      <button id="btn-reset">Reset</button>
+      <div class="scrubber-wrap grow">
+        <label for="scrubber">Timeline</label>
+        <input id="scrubber" type="range" min="0" max="15" value="0" step="1">
+      </div>
+    </div>
+    <p class="error" id="error-msg"></p>
+  </section>
+
+  <section class="card stage">
+    <div class="stacks" id="stacks">
+      <div class="stack-col" id="col-sender">
+        <h2>Sender</h2>
+        <div class="stack" id="stack-sender-osi"></div>
+        <div class="stack" id="stack-sender-tcpip"></div>
+      </div>
+
+      <div class="wire-col">
+        <h2>&nbsp;</h2>
+        <div class="wire" id="wire">
+          <div class="wire-line"></div>
+          <div class="packet-bubble" id="packet-bubble">✉</div>
+        </div>
+      </div>
+
+      <div class="stack-col" id="col-receiver">
+        <h2>Receiver</h2>
+        <div class="stack" id="stack-receiver-osi"></div>
+        <div class="stack" id="stack-receiver-tcpip"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card inspector">
+    <h2>Packet Inspector</h2>
+    <p class="step-description" id="step-description">Ready. Click <strong>Send</strong> to begin.</p>
+    <div class="packet-view" id="packet-view"></div>
+    <div class="final-message" id="final-message" hidden></div>
+  </section>
+
+  <section class="card legend">
+    <h2>Layer Reference</h2>
+    <div class="table-scroll">
+      <table class="results-table" id="legend-table">
+        <thead>
+          <tr><th>OSI Layer</th><th>TCP/IP Layer</th><th>Function</th><th>Example Protocol</th></tr>
+        </thead>
+        <tbody id="legend-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
