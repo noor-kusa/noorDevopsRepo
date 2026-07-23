@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP / CIDR Subnet Calculator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>IP &amp; Subnet Calculator</h1>
+    <p class="subtitle">IPv4 / IPv6 classification, subnetting, CIDR math</p>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="ipv4">IPv4 Calculator</button>
+    <button class="tab-btn" data-tab="ipv6">IPv6 Calculator</button>
+    <button class="tab-btn" data-tab="reverse">Reverse Lookup</button>
+  </nav>
+
+  <!-- IPv4 TAB -->
+  <section id="ipv4" class="tab-panel active">
+    <div class="card">
+      <label for="ipv4-input">IP Address / CIDR</label>
+      <div class="input-row">
+        <input id="ipv4-input" type="text" placeholder="e.g. 192.168.1.0/24" value="192.168.1.0/24">
+        <button id="ipv4-calc">Calculate</button>
+      </div>
+      <p class="error" id="ipv4-error"></p>
+    </div>
+
+    <div class="card" id="ipv4-results" hidden>
+      <table class="results-table">
+        <tbody>
+          <tr><th>IP Class</th><td id="r-class"></td></tr>
+          <tr><th>Address Scope</th><td id="r-scope"></td></tr>
+          <tr><th>Subnet Mask</th><td id="r-mask"></td></tr>
+          <tr><th>Wildcard Mask</th><td id="r-wildcard"></td></tr>
+          <tr><th>Network Address</th><td id="r-network"></td></tr>
+          <tr><th>Broadcast Address</th><td id="r-broadcast"></td></tr>
+          <tr><th>First Usable Host</th><td id="r-first"></td></tr>
+          <tr><th>Last Usable Host</th><td id="r-last"></td></tr>
+          <tr><th>Total Addresses</th><td id="r-total"></td></tr>
+          <tr><th>Usable Hosts</th><td id="r-usable"></td></tr>
+          <tr><th>Public / Private</th><td id="r-public"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" id="ipv4-split-card" hidden>
+      <h2>Split into equal subnets</h2>
+      <div class="input-row">
+        <label for="split-n">Number of subnets</label>
+        <input id="split-n" type="number" min="2" value="4">
+        <button id="split-calc">Split</button>
+      </div>
+      <p class="error" id="split-error"></p>
+      <div id="split-viz" class="viz-bar" hidden></div>
+      <div class="table-scroll">
+        <table class="results-table" id="split-table" hidden>
+          <thead>
+            <tr><th>#</th><th>CIDR</th><th>Network</th><th>Broadcast</th><th>Usable Range</th></tr>
+          </thead>
+          <tbody id="split-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- IPv6 TAB -->
+  <section id="ipv6" class="tab-panel">
+    <div class="card">
+      <label for="ipv6-input">IPv6 Address / Prefix</label>
+      <div class="input-row">
+        <input id="ipv6-input" type="text" placeholder="e.g. 2001:db8::/32" value="2001:db8::/32">
+        <button id="ipv6-calc">Calculate</button>
+      </div>
+      <p class="error" id="ipv6-error"></p>
+    </div>
+
+    <div class="card" id="ipv6-results" hidden>
+      <table class="results-table">
+        <tbody>
+          <tr><th>Address Scope</th><td id="r6-scope"></td></tr>
+          <tr><th>Expanded Address</th><td id="r6-expanded"></td></tr>
+          <tr><th>Compressed Address</th><td id="r6-compressed"></td></tr>
+          <tr><th>Network (First Address)</th><td id="r6-network"></td></tr>
+          <tr><th>Last Address</th><td id="r6-last"></td></tr>
+          <tr><th>Prefix Length</th><td id="r6-prefix"></td></tr>
+          <tr><th>Total Addresses</th><td id="r6-total"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- REVERSE TAB -->
+  <section id="reverse" class="tab-panel">
+    <div class="card">
+      <p class="hint">Enter two IP addresses (both IPv4 or both IPv6) and find the smallest CIDR block that contains both.</p>
+      <div class="input-row stacked">
+        <label for="rev-ip1">First IP</label>
+        <input id="rev-ip1" type="text" placeholder="e.g. 192.168.1.10" value="192.168.1.10">
+      </div>
+      <div class="input-row stacked">
+        <label for="rev-ip2">Second IP</label>
+        <input id="rev-ip2" type="text" placeholder="e.g. 192.168.1.200" value="192.168.1.200">
+      </div>
+      <div class="input-row">
+        <button id="rev-calc">Find Smallest CIDR</button>
+      </div>
+      <p class="error" id="rev-error"></p>
+    </div>
+
+    <div class="card" id="rev-results" hidden>
+      <table class="results-table">
+        <tbody>
+          <tr><th>Smallest Containing CIDR</th><td id="rev-cidr"></td></tr>
+          <tr><th>Network Address</th><td id="rev-network"></td></tr>
+          <tr><th>Total Addresses</th><td id="rev-total"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
