@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNS Resolution Simulator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>DNS Resolution Simulator</h1>
+    <p class="subtitle">A fake root &rarr; TLD &rarr; authoritative walk over an in-app DNS database &mdash; not a real DNS client</p>
+  </header>
+
+  <section class="card lookup">
+    <div class="control-row">
+      <div class="control-group grow">
+        <label for="lookup-name">Domain name</label>
+        <input id="lookup-name" type="text" value="mail.example.com" placeholder="e.g. mail.example.com">
+      </div>
+      <div class="control-group">
+        <label for="lookup-type">Record type</label>
+        <select id="lookup-type">
+          <option value="A">A</option>
+          <option value="MX">MX</option>
+          <option value="CNAME">CNAME</option>
+          <option value="TXT">TXT</option>
+          <option value="NS">NS</option>
+        </select>
+      </div>
+      <button id="btn-resolve" class="primary">Resolve</button>
+      <button id="btn-clear-cache">Clear Cache</button>
+    </div>
+    <p class="error" id="lookup-error"></p>
+  </section>
+
+  <section class="card" id="path-card" hidden>
+    <h2>Resolution Path</h2>
+    <div class="hops" id="hops"></div>
+    <div class="final-answer" id="final-answer" hidden></div>
+  </section>
+
+  <section class="card" id="trace-card" hidden>
+    <h2>dig +trace style output <span class="badge">SIMULATED</span></h2>
+    <pre class="trace-output" id="trace-output"></pre>
+  </section>
+
+  <section class="card">
+    <h2>Cache (TTL countdown)</h2>
+    <p class="hint">Answers are cached for their TTL. A repeat lookup within that window is served instantly from cache instead of re-walking the hierarchy.</p>
+    <div class="table-scroll">
+      <table class="results-table" id="cache-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Answer</th><th>TTL remaining</th><th></th></tr></thead>
+        <tbody id="cache-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="admin-header">
+      <h2>Admin Panel &mdash; Zones &amp; Records</h2>
+      <button id="btn-toggle-admin">Show</button>
+    </div>
+    <div id="admin-body" hidden>
+      <div class="admin-grid">
+        <div class="admin-col">
+          <h3>Zones</h3>
+          <div class="table-scroll">
+            <table class="results-table" id="zones-table">
+              <thead><tr><th>Zone</th><th># records</th><th></th></tr></thead>
+              <tbody id="zones-tbody"></tbody>
+            </table>
+          </div>
+
+          <h3>Add zone</h3>
+          <div class="control-row stacked">
+            <label for="new-zone-name">New zone (fully qualified, e.g. net.)</label>
+            <input id="new-zone-name" type="text" placeholder="e.g. net. or shop.example.com.">
+          </div>
+          <div class="control-row stacked">
+            <label for="new-zone-parent">Delegating parent zone</label>
+            <select id="new-zone-parent"></select>
+          </div>
+          <div class="control-row stacked">
+            <label for="new-zone-ns">Delegated name server hostname</label>
+            <input id="new-zone-ns" type="text" placeholder="e.g. ns1.example-dns.net.">
+          </div>
+          <div class="control-row stacked">
+            <label for="new-zone-ttl">Delegation TTL (seconds)</label>
+            <input id="new-zone-ttl" type="number" value="86400" min="1">
+          </div>
+          <button id="btn-add-zone">Create zone</button>
+          <p class="error" id="zone-error"></p>
+        </div>
+
+        <div class="admin-col">
+          <h3>Records</h3>
+          <div class="control-row">
+            <div class="control-group grow">
+              <label for="record-zone-select">Zone</label>
+              <select id="record-zone-select"></select>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table class="results-table" id="records-table">
+              <thead><tr><th>Name</th><th>Type</th><th>Value</th><th>TTL</th><th></th></tr></thead>
+              <tbody id="records-tbody"></tbody>
+            </table>
+          </div>
+
+          <h3>Add record</h3>
+          <div class="control-row">
+            <div class="control-group grow">
+              <label for="rec-name">Name (fully qualified)</label>
+              <input id="rec-name" type="text" placeholder="e.g. mail.example.com.">
+            </div>
+            <div class="control-group">
+              <label for="rec-type">Type</label>
+              <select id="rec-type">
+                <option value="A">A</option>
+                <option value="NS">NS</option>
+                <option value="MX">MX</option>
+                <option value="CNAME">CNAME</option>
+                <option value="TXT">TXT</option>
+              </select>
+            </div>
+          </div>
+          <div class="control-row">
+            <div class="control-group grow">
+              <label for="rec-value">Value</label>
+              <input id="rec-value" type="text" placeholder="e.g. 93.184.216.35">
+            </div>
+            <div class="control-group">
+              <label for="rec-ttl">TTL (seconds)</label>
+              <input id="rec-ttl" type="number" value="300" min="1">
+            </div>
+          </div>
+          <button id="btn-add-record">Add record</button>
+          <p class="error" id="record-error"></p>
+        </div>
+      </div>
+
+      <div class="control-row" style="margin-top: 16px;">
+        <button id="btn-reset-db">Reset database to defaults</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
